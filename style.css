@@ -1,0 +1,18 @@
+#data {
+	height: 12em;
+}
+#nav p {
+	border: 1px solid black;
+	border-radius: .5em;
+	-webkit-border-radius: .5em;
+	-moz-border-radius: .5em;
+	margin: .2em .5em;
+	font-family: fixed;
+	text-align: center;
+	display: inline-block;
+	width: 2.5em;
+}
+body {
+	text-align: center;
+	font-size: 18pt;
+}
