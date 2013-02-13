@@ -1,13 +1,40 @@
 #data {
 	height: 12em;
 }
+#data div {
+	display: inline-block;
+	font-family: monospace;
+}
+#data p {
+	text-align: left;
+	width: 10em;
+	margin: 0;
+}
+#data p span {
+	display: inline-block;
+	width: 4.5em;
+	text-align: right;
+}
+#data .header {
+	text-align: center;
+	border: 1px solid #DDD;
+	padding: 0.5em;
+	margin-bottom: 0.6em;
+}
+#data .header span {
+	margin-left: 2.5em;
+	display: inline;
+}
+#data .footer {
+	margin-top: 0.7em;
+}
+
 #nav p {
 	border: 1px solid black;
 	border-radius: .5em;
 	-webkit-border-radius: .5em;
 	-moz-border-radius: .5em;
 	margin: .2em .5em;
-	font-family: fixed;
 	text-align: center;
 	display: inline-block;
 	width: 2.5em;

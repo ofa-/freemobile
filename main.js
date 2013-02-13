@@ -1,9 +1,6 @@
 function init() {
 	var state = getState();
-	if (!state) {
-		showError("error loading state");
-		return;
-	}
+	if (!state) return showError("error loading state");
 	setupCarousel(state);
 	setupNav(state);
 }
@@ -29,25 +26,37 @@ function setupCarousel(state) {
 		hastyPageFlip: true
 	});
 	for (var i=0; i<3; i++) {
-		var pre = document.createElement('pre');
-		carousel.masterPages[i].appendChild(pre);
-		//var page = (currId + i - 1 + nbPages) % nbPages;
-		var page = (i - 1 + nbPages) % nbPages;
-		setViewData(pre, state.files[page], cache);
+		var div = document.createElement('div');
+		carousel.masterPages[i].appendChild(div);
+		carousel.masterPages[i].dataset.pageIndex = undefined;
 	}
-	carousel.onFlip(function () {
+	carousel.onFlip(function () { carousel.flip() });
+	carousel.flip = function () {
 		for (var i=0; i<3; i++) {
-			var dataset = carousel.masterPages[i].dataset;
+			var dataset = this.masterPages[i].dataset;
 			var upcoming = dataset.upcomingPageIndex;
 			if (upcoming != dataset.pageIndex) {
-				var pre = carousel.masterPages[i].firstChild;
-				setViewData(pre, state.files[upcoming], cache);
+				var div = this.masterPages[i].firstChild;
+				setViewData(div, state.files[upcoming], cache);
 			}
 		}
-	});
-	carousel.home = function () {
-		this.goToPage(currId);
+		setHomeButt(this.pageIndex == currId ? "::" : ":.:"); 
 	}
+	carousel.home = function () {
+		if (this.pageIndex == currId) {
+			location.replace("./");
+			return;
+		}
+		for (var i=0; i < 3; i++) {
+			this.masterPages[i].dataset.pageIndex = undefined;
+		}
+		var i = this.pageIndex > currId ? -1 : +1;
+		var p = (this.currentMasterPage + i + 3) % 3;
+		this.masterPages[p].dataset.upcomingPageIndex = currId;
+		this.page = this.pageIndex = (currId - i + nbPages) % nbPages;
+		(i == 1) ? this.next() : this.prev();
+	}
+	carousel.goToPage(currId);
 	state.carousel = carousel;
 }
 
@@ -62,7 +71,49 @@ function setViewData(dest, id, cache) {
 }
 
 function formatData(data) {
-	return data ? objToString(data) : false;
+	var date = new Date(data.timestamp * 1000);
+	var day = pad02(date.getDate()) + "." + pad02(date.getMonth()+1);
+	var hour = date.getHours();
+	var voice = data.voice_nat + data.voice_int + data.voice_spe;
+	var sms = data.sms_nat + data.sms_int;
+	var mms = data.mms_nat + data.mms_int;
+	var datA = (data.data_nat + data.data_int).toFixed(0);
+	var cost = (data.cost).toFixed(2);
+	return format1(day, hour, voice, sms, mms, datA, cost);
+}
+
+function format1(day, hour, voice, sms, mms, data, cost) {
+        var html = "";
+	var time = pretty_time(voice);
+	var t1 = time.split(" ")[0];
+	html += "<div>";
+        html += "<p class=header>";
+        html += day + "<span>" + hour + "h</span>";
+        html += "</p><p>";
+        html += "<span>" + t1 + "</span>" + time.substring(t1.length);
+        html += "</p><p>";
+        html += "<span>" + sms + "</span> SMS";
+        html += "</p><p>";
+        html += "<span>" + mms + "</span> MMS";
+        html += "</p><p>";
+        html += "<span>" + data + "</span> Mo";
+        html += "</p><p class=footer>";
+        html += "<span>Total</span> " + cost + " €";
+        html += "</p>";
+	html += "</div>";
+        return html;
+}
+
+function pad02(num) {
+	num = "0" + num ;
+	return num.substring(num.length - 2);
+}
+
+function pretty_time(sec) {
+	var h = Math.floor(sec / 3600);
+	var m = Math.floor((sec - h * 3600) / 60);
+	var s = sec % 60;
+	return h ? h + " h " + m + " min" : m ? m + " min " + s + "s" : s + "s";
 }
 
 function setViewDataAsync(dest, id, cache) {
@@ -109,6 +160,11 @@ function setupNav(state) {
 	nav.appendChild(elt);
 }
 
+function setHomeButt(txt) {
+	var home = document.querySelectorAll('#nav p')[1];
+	if (home) home.innerHTML = txt;
+}
+
 function getDots() {
 	return document.querySelectorAll('#nav li');
 }
@@ -117,7 +173,8 @@ function getJson(url) {
 	var req = new XMLHttpRequest();
 	req.open('GET', url, false);
 	req.send(null);
-	var json = eval("json=" + req.responseText);
+	var json = null;
+	try { eval("json=" + req.responseText); } catch (e) {}
 	return json;
 }
 
