@@ -16,4 +16,4 @@ echo "{
 	nbHours: $NB_HOURS,
 	timeStamp: $(date +%s),
 	files: [ "$FILES" ],
-}" | curl -s -T - $CURL_FTP_URL/state.json
+}" | curl -s -T - $CURL_FTP_URL/data/state.json

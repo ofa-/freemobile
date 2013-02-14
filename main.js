@@ -6,7 +6,7 @@ function init() {
 }
 
 function getState() {
-	return getJson('state.json');
+	return getJson('data/state.json');
 }
 
 function getData(id) {

@@ -21,7 +21,7 @@ done
 
 STEP "creating data/ dir"
 echo -n \
-| curl -s -T - --ftp-create-dirs $CURL_FTP_URL/data/.init || exit 1
+| curl -s -T - --ftp-create-dirs $CURL_FTP_URL/data/state.json || exit 1
 
 STEP "installing .htaccess"
 ( cat << EOF 
