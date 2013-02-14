@@ -47,14 +47,9 @@ function setupCarousel(state) {
 			location.replace("./");
 			return;
 		}
-		for (var i=0; i < 3; i++) {
-			this.masterPages[i].dataset.pageIndex = undefined;
-		}
-		var i = this.pageIndex > currId ? -1 : +1;
-		var p = (this.currentMasterPage + i + 3) % 3;
-		this.masterPages[p].dataset.upcomingPageIndex = currId;
-		this.page = this.pageIndex = (currId - i + nbPages) % nbPages;
-		(i == 1) ? this.next() : this.prev();
+		var d = this.pageIndex > currId ? -1 : +1;
+		this.goToPage((currId - d + nbPages) % nbPages);
+		(d == 1) ? this.next() : this.prev();
 	}
 	carousel.goToPage(currId);
 	state.carousel = carousel;
