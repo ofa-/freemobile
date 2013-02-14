@@ -163,7 +163,8 @@ function getJsonAsync(url, callback) {
 		if (req.readyState != 4)
 			return;
 		if (req.status == 200 || req.status == 304) {
-			var json = eval("json=" + req.responseText);
+			var json = null;
+			try { eval("json=" + req.responseText); } catch (e) {}
 			callback(json);
 		}
 		else {
