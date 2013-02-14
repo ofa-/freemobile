@@ -13,10 +13,6 @@ function getData(id) {
 	return getJson('data/' + id + '.json');
 }
 
-function getDataAsync(id, action) {
-	getJsonAsync('data/' + id + '.json', action);
-}
-
 function setupCarousel(state) {
 	var cache = {};
 	var currId = state.files.indexOf(state.currId);
@@ -109,20 +105,6 @@ function pretty_time(sec) {
 	var m = Math.floor((sec - h * 3600) / 60);
 	var s = sec % 60;
 	return h ? h + " h " + m + " min" : m ? m + " min " + s + "s" : s + "s";
-}
-
-function setViewDataAsync(dest, id, cache) {
-	var cached = "id_" + id;
-	if (cache[cached]) {
-		dest.innerHTML = cache[cached];
-	}
-	else {
-		cache[cached] = "loading...";
-		getDataAsync(id, function (data) {
-			cache[cached] = data;
-			dest.innerHTML = data || "error loading data " + id;
-		});
-	}
 }
 
 function objToString (obj) {
