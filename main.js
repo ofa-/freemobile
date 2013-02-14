@@ -77,11 +77,12 @@ function format1(day, hour, voice, sms, mms, data, cost) {
         var html = "";
 	var time = pretty_time(voice);
 	var t1 = time.split(" ")[0];
+	var t2 = time.substring(t1.length);
 	html += "<div>";
         html += "<p class=header>";
         html += day + "<span>" + hour + "h</span>";
         html += "</p><p>";
-        html += "<span>" + t1 + "</span>" + time.substring(t1.length);
+        html += "<span>" + t1 + "</span>" + t2;
         html += "</p><p>";
         html += "<span>" + sms + "</span> SMS";
         html += "</p><p>";
