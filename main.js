@@ -40,7 +40,7 @@ function setupCarousel(state) {
 				setViewData(div, state.files[upcoming], cache);
 			}
 		}
-		setHomeButt(this.pageIndex == currId ? "::" : ":.:"); 
+		setHomeButt(this.pageIndex == currId ? "::" : ": :"); 
 	}
 	carousel.home = function () {
 		if (this.pageIndex == currId) {
