@@ -21,33 +21,29 @@ function setupCarousel(state) {
 		numberOfPages: nbPages,
 		hastyPageFlip: true
 	});
-	for (var i=0; i<3; i++) {
+	carousel.goToPage(currId);
+	for (var i = 0; i < 3; i++) {
 		var div = document.createElement('div');
+		var dataId = (currId + i - 1 + nbPages) % nbPages;
 		carousel.masterPages[i].appendChild(div);
-		carousel.masterPages[i].dataset.pageIndex = undefined;
+		setViewData(div, state.files[dataId], cache);
 	}
 	carousel.onFlip(function () { carousel.flip() });
 	carousel.flip = function () {
-		for (var i=0; i<3; i++) {
-			var dataset = this.masterPages[i].dataset;
-			var upcoming = dataset.upcomingPageIndex;
-			if (upcoming != dataset.pageIndex) {
-				var div = this.masterPages[i].firstChild;
-				setViewData(div, state.files[upcoming], cache);
-			}
-		}
+		var dir = this.directionX;
+		var mp = (this.currentMasterPage - dir + 3) % 3;
+		var id = (this.pageIndex - dir + nbPages) % nbPages;
+		var div = this.masterPages[mp].firstChild;
+		setViewData(div, state.files[id], cache);
 		setHomeButt(this.pageIndex == currId ? "::" : ": :"); 
 	}
 	carousel.home = function () {
-		if (this.pageIndex == currId) {
-			location.replace("./");
-			return;
-		}
-		var d = this.pageIndex > currId ? -1 : +1;
-		this.goToPage((currId - d + nbPages) % nbPages);
-		(d == 1) ? this.next() : this.prev();
+		var d = currId - this.pageIndex;
+		(Math.abs(d) > nbPages/2) && d -= nbPages;
+		(d == 0) && location.replace("./");
+		(d > 0)  && while (d--) this.next();
+		(d < 0)  && while (d++) this.prev();
 	}
-	carousel.goToPage(currId);
 	state.carousel = carousel;
 }
 
