@@ -39,10 +39,10 @@ function setupCarousel(state) {
 	}
 	carousel.home = function () {
 		var d = currId - this.pageIndex;
-		(Math.abs(d) > nbPages/2) && d -= nbPages;
-		(d == 0) && location.replace("./");
-		(d > 0)  && while (d--) this.next();
-		(d < 0)  && while (d++) this.prev();
+		if (Math.abs(d) > nbPages/2) d -= nbPages;
+		if (d == 0) location.replace("./");
+		else if (d > 0)  while (d--) this.next();
+		else if (d < 0)  while (d++) this.prev();
 	}
 	state.carousel = carousel;
 }
