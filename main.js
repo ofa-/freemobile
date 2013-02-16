@@ -13,6 +13,10 @@ function getData(id) {
 	return getJson('data/' + id + '.json');
 }
 
+function getDataAsync(id, callback) {
+	getJsonAsync('data/' + id + '.json', callback);
+}
+
 function setupCarousel(state) {
 	var cache = {};
 	var currId = state.files.indexOf(state.currId);
@@ -51,15 +55,23 @@ function setViewData(dest, id, cache) {
 	var cacheId = "id_" + id;
 	var entry = cache[cacheId];
 	if (!entry) {
-		entry = cache[cacheId] = {};
-		entry.data = getData(id);
-		entry.view = document.createElement("div");
+		entry = createEntry(id);
+		cache[cacheId] = entry;
+	}
+	dest.replaceChild(entry.view, dest.firstChild);
+}
+
+function createEntry(id) {
+	var entry = {};
+	entry.view = document.createElement("div");
+	getDataAsync(id, function(data) {
+		entry.data = data;
 		if (entry.data) 
 			entry.view.innerHTML = formatData(entry.data);
 		else
 			entry.view.innerHTML = "error loading data " + id;
-	}
-	dest.replaceChild(entry.view, dest.firstChild);
+	});
+	return entry;
 }
 
 function formatData(data) {
