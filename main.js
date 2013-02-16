@@ -21,7 +21,7 @@ function setupCarousel(state) {
 		numberOfPages: nbPages,
 		hastyPageFlip: true
 	});
-	carousel.goToPage(currId);
+	carousel.pageIndex = currId;
 	for (var i = 0; i < 3; i++) {
 		var div = carousel.masterPages[i];
 		var dataId = (currId + i - 1 + nbPages) % nbPages;
