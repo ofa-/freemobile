@@ -23,9 +23,9 @@ function setupCarousel(state) {
 	});
 	carousel.goToPage(currId);
 	for (var i = 0; i < 3; i++) {
-		var div = document.createElement('div');
+		var div = carousel.masterPages[i];
 		var dataId = (currId + i - 1 + nbPages) % nbPages;
-		carousel.masterPages[i].appendChild(div);
+		div.appendChild(document.createElement("dummy"));
 		setViewData(div, state.files[dataId], cache);
 	}
 	carousel.onFlip(function () { carousel.flip() });
@@ -33,7 +33,7 @@ function setupCarousel(state) {
 		var dir = this.directionX;
 		var mp = (this.currentMasterPage - dir + 3) % 3;
 		var id = (this.pageIndex - dir + nbPages) % nbPages;
-		var div = this.masterPages[mp].firstChild;
+		var div = this.masterPages[mp];
 		setViewData(div, state.files[id], cache);
 		setHomeButt(this.pageIndex == currId ? "::" : ": :"); 
 	}
@@ -49,12 +49,17 @@ function setupCarousel(state) {
 
 function setViewData(dest, id, cache) {
 	var cacheId = "id_" + id;
-	var data = cache[cacheId];
-	if (!data) {
-		data = getData(id);
-		cache[cacheId] = data;
+	var entry = cache[cacheId];
+	if (!entry) {
+		entry = cache[cacheId] = {};
+		entry.data = getData(id);
+		entry.view = document.createElement("div");
+		if (entry.data) 
+			entry.view.innerHTML = formatData(entry.data);
+		else
+			entry.view.innerHTML = "error loading data " + id;
 	}
-	dest.innerHTML = formatData(data) || "error loading data " + id;
+	dest.replaceChild(entry.view, dest.firstChild);
 }
 
 function formatData(data) {
