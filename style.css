@@ -1,7 +1,15 @@
 #data {
 	height: 12em;
 }
-#data div {
+#data div div {
+	display: table;
+}
+#data div div div {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+#data div div div div {
 	display: inline-block;
 	font-family: monospace;
 }
@@ -20,7 +28,6 @@
 	border: 1px solid #DDD;
 	padding: 0.5em;
 	margin-bottom: 0.6em;
-	margin-top: 1em;
 }
 #data .header span {
 	margin-left: 2.5em;
