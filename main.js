@@ -1,8 +1,8 @@
 function init() {
 	var state = getState();
 	if (!state) return showError("error loading state");
-	setupCarousel(state);
 	setupNav(state);
+	setupCarousel(state);
 }
 
 function getState() {
