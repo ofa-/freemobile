@@ -1,30 +1,46 @@
 function init() {
-	var state = getState();
-	if (!state) return showError("error loading state");
-	setupNav(state);
-	setupCarousel(state);
+	setupNav();
+	getStateAsync(function(state) {
+		if (state)
+			setupCarousel(state);
+		else
+			showError("error loading state");
+	});
 }
 
-function getState() {
-	return getJson('data/state.json');
-}
-
-function getData(id) {
-	return getJson('data/' + id + '.json');
+function getStateAsync(callback) {
+	getJsonAsync('data/state.json', callback);
 }
 
 function getDataAsync(id, callback) {
 	getJsonAsync('data/' + id + '.json', callback);
 }
 
+function setupNav() {
+	var nav = document.getElementById("nav");
+	nav.innerHTML = "<p>&lt;</p><p>::</p><p>&gt;</p>";
+}
+
 function setupCarousel(state) {
+	var carousel = new SwipeView('#data', {
+		numberOfPages: state.files.length,
+		hastyPageFlip: true
+	});
+	initNav(carousel);
+	initCarousel(carousel, state);
+}
+
+function initNav(carousel) {
+	var butts = document.querySelectorAll('#nav p');
+	butts[0].onclick = function() { carousel.prev(); }
+	butts[1].onclick = function() { carousel.home(); }
+	butts[2].onclick = function() { carousel.next(); }
+}
+
+function initCarousel(carousel, state) {
 	var cache = {};
 	var currId = state.files.indexOf(state.currId);
 	var nbPages = state.files.length;
-	var carousel = new SwipeView('#data', {
-		numberOfPages: nbPages,
-		hastyPageFlip: true
-	});
 	carousel.pageIndex = currId;
 	for (var i = 0; i < 3; i++) {
 		var div = carousel.masterPages[i];
@@ -48,7 +64,6 @@ function setupCarousel(state) {
 		else if (d > 0)  while (d--) this.next();
 		else if (d < 0)  while (d++) this.prev();
 	}
-	state.carousel = carousel;
 }
 
 function setViewData(dest, id, cache) {
@@ -135,25 +150,9 @@ function showError(msg) {
 	document.getElementById("data").innerHTML = msg;
 }
 
-function setupNav(state) {
-	var nav = document.getElementById("nav");
-	elt = document.createElement("p");
-	elt.innerHTML = "&lt;";
-	elt.onclick = function() { state.carousel.prev(); }
-	nav.appendChild(elt);
-	elt = document.createElement("p");
-	elt.innerHTML = "::";
-	elt.onclick = function() { state.carousel.home(); }
-	nav.appendChild(elt);
-	elt = document.createElement("p");
-	elt.innerHTML = "&gt;";
-	elt.onclick = function() { state.carousel.next(); }
-	nav.appendChild(elt);
-}
-
 function setHomeButt(txt) {
 	var home = document.querySelectorAll('#nav p')[1];
-	if (home) home.innerHTML = txt;
+	home.innerHTML = txt;
 }
 
 function getDots() {
