@@ -148,9 +148,13 @@ function getDots() {
 	return document.querySelectorAll('#nav li');
 }
 
+function nocache(url) {
+	return url + "?" + new Date().getTime();
+}
+
 function getJson(url) {
 	var req = new XMLHttpRequest();
-	req.open('GET', url, false);
+	req.open('GET', nocache(url), false);
 	req.send(null);
 	var json = null;
 	try { eval("json=" + req.responseText); } catch (e) {}
@@ -159,7 +163,7 @@ function getJson(url) {
 
 function getJsonAsync(url, callback) {
 	var req = new XMLHttpRequest();
-	req.open('GET', url, true);
+	req.open('GET', nocache(url), true);
 	req.onreadystatechange = function () {
 		if (req.readyState != 4)
 			return;
