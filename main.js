@@ -1,5 +1,6 @@
 function init() {
 	setupNav();
+	setupLoading();
 	getStateAsync(function(state) {
 		if (state)
 			setupCarousel(state);
@@ -19,6 +20,18 @@ function getDataAsync(id, callback) {
 function setupNav() {
 	var nav = document.getElementById("nav");
 	nav.innerHTML = "<p>&lt;</p><p>::</p><p>&gt;</p>";
+}
+
+function setupLoading() {
+	var data = document.getElementById("data");
+	data.innerHTML = "<div><div></div></div>";
+	data.firstChild.firstChild.style.cssText = "width:100%;height:100%";
+	data.firstChild.firstChild.appendChild(makeLoadingScreen());
+}
+
+function removeLoading() {
+	var data = document.getElementById("data");
+	data.removeChild(data.firstChild);
 }
 
 function setupCarousel(state) {
@@ -48,6 +61,7 @@ function initCarousel(carousel, state) {
 		div.appendChild(document.createElement("dummy"));
 		setViewData(div, state.files[dataId], cache);
 	}
+	removeLoading();
 	carousel.onFlip(function () { carousel.flip() });
 	carousel.flip = function () {
 		var dir = this.directionX;
@@ -78,7 +92,7 @@ function setViewData(dest, id, cache) {
 
 function createEntry(id) {
 	var entry = {};
-	entry.view = document.createElement("div");
+	entry.view = makeLoadingScreen();
 	getDataAsync(id, function(data) {
 		entry.data = data;
 		if (entry.data) 
@@ -134,6 +148,13 @@ function pretty_time(sec) {
 	var m = Math.floor((sec - h * 3600) / 60);
 	var s = sec % 60;
 	return h ? h + " h " + m + " min" : m ? m + " min " + s + "s" : s + "s";
+}
+
+function makeLoadingScreen() {
+	var div = document.createElement("div")
+	div.innerHTML = "<div><center>loading</center></div>";
+	div.firstChild.appendChild(create_spinner());
+	return div;
 }
 
 function objToString (obj) {
