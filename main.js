@@ -98,7 +98,7 @@ function createEntry(id) {
 		if (entry.data) 
 			entry.view.innerHTML = formatData(entry.data);
 		else
-			entry.view.innerHTML = "error loading data " + id;
+			entry.view.innerHTML = error("error loading data " + id);
 	});
 	return entry;
 }
@@ -150,6 +150,10 @@ function pretty_time(sec) {
 	return h ? h + " h " + m + " min" : m ? m + " min " + s + "s" : s + "s";
 }
 
+function error(msg) {
+	return "<div><center>" + msg + "</center></div>";
+}
+
 function makeLoadingScreen() {
 	var div = document.createElement("div")
 	div.innerHTML = "<div><center>loading</center></div>";
@@ -168,7 +172,8 @@ function objToString (obj) {
 }
 
 function showError(msg) {
-	document.getElementById("data").innerHTML = msg;
+	var elt = document.querySelectorAll('#data div')[3];
+	elt.innerHTML = error(msg);
 }
 
 function setHomeButt(txt) {
