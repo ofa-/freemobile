@@ -20,6 +20,7 @@ function getDataAsync(id, callback) {
 function setupNav() {
 	var nav = document.getElementById("nav");
 	nav.innerHTML = "<p>&lt;</p><p>::</p><p>&gt;</p>";
+	nav.children[1].onclick = function() { location.reload(true) }
 }
 
 function setupLoading() {
