@@ -46,6 +46,7 @@
 	text-align: center;
 	display: inline-block;
 	width: 2.5em;
+	cursor: pointer;
 }
 body {
 	text-align: center;
