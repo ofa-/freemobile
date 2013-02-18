@@ -39,7 +39,7 @@ function removeLoading() {
 
 function hideUrlBar() {
 	window.onorientationchange = function () {
-		window.scrollTo(0, 20);
+		window.scrollTo(0, 0);
 	}
 	window.onorientationchange();
 }
