@@ -26,6 +26,7 @@ function setupNav() {
 function setupLoading() {
 	var data = document.getElementById("data");
 	data.innerHTML = "<div><div></div></div>";
+	data.firstChild.style.cssText = "width:100%;height:100%";
 	data.firstChild.firstChild.style.cssText = "width:100%;height:100%";
 	data.firstChild.firstChild.appendChild(makeLoadingScreen());
 }
