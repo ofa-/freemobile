@@ -1,4 +1,5 @@
 function init() {
+	hideUrlBar();
 	setupNav();
 	setupLoading();
 	getStateAsync(function(state) {
@@ -34,6 +35,13 @@ function setupLoading() {
 function removeLoading() {
 	var data = document.getElementById("data");
 	data.removeChild(data.firstChild);
+}
+
+function hideUrlBar() {
+	window.onorientationchange = function () {
+		window.scrollTo(0, 20);
+	}
+	window.onorientationchange();
 }
 
 function setupCarousel(state) {
