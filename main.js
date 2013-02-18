@@ -187,6 +187,14 @@ function getDots() {
 	return document.querySelectorAll('#nav li');
 }
 
+function getVersion() {
+	var req = new XMLHttpRequest();
+	req.open('GET', "manifest.mf", false);
+	req.send(null);
+	var version = req.responseText.split('\n')[1];
+	return version;
+}
+
 function nocache(url) {
 	return url + "?" + new Date().getTime();
 }
