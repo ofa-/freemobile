@@ -14,7 +14,7 @@ boobill -I ls | grep -q -- "$PHONE_NUMBER -" || {
 	exit 1
 }
 
-for f in index.html main.js style.css swipeview.js; do
+for f in index.html *.js *.css; do
 	STEP "installing $f..."
 	curl -s -T $f --ftp-create-dirs $CURL_FTP_URL/ || exit 1
 done
