@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $0)
-source config
+source ./config
 
 ID=$((($(date +%s) / 3600 / NB_HOURS ) % NB_FILES))
 ID=$(((ID + ID_OFFSET + NB_FILES) % NB_FILES))

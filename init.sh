@@ -18,7 +18,7 @@ init
 check_create_config || exit 0
 
 STEP "reading config"
-source config
+source ./config
 echo
 cat config
 

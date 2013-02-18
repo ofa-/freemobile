@@ -12,7 +12,7 @@ STEP() { printf "\r%-30s" "$1"; }
 init
 
 STEP "reading config"
-source config
+source ./config
 
 STEP "checking server"
 if ! curl -s $CURL_FTP_URL/data/ &> /dev/null; then
