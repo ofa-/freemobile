@@ -1,34 +1,35 @@
-#!/bin/bash
+#!/bin/bash -e
 
-cd $(dirname $0)
+init() {
+	cd $(dirname $0)
+	trap 'echo -e "\ninit failed" >&2' ERR
+}
+
+check_create_config() {
+	[ -f config ] && return 0
+	cp config.sample config
+	echo "created config from sample.  please edit."
+	return 1
+}
+
+STEP() { printf "\r%-30s" "$1"; }
+
+init
+check_create_config || exit 0
+
+STEP "reading config"
 source config
-
-echo "setting up site:"
+echo
 cat config
 
-STEP() { printf "\r%-30s" "$@"; }
+STEP "installing webapp"
+./publish.sh
 
 STEP "checking boobill"
 boobill -I ls | grep -q -- "$PHONE_NUMBER -" || {
 	echo "no setup for phone number: $PHONE_NUMBER"
 	exit 1
 }
-
-for f in index.html *.js *.css; do
-	STEP "installing $f..."
-	curl -s -T $f --ftp-create-dirs $CURL_FTP_URL/ || exit 1
-done
-
-STEP "creating data/ dir"
-echo -n \
-| curl -s -T - --ftp-create-dirs $CURL_FTP_URL/data/state.json || exit 1
-
-STEP "installing .htaccess"
-( cat << EOF 
-ErrorDocument 404 "<html><script>location.replace('./')</script></html>"
-AddDefaultCharset UTF-8
-EOF
-) | curl -s -T - $CURL_FTP_URL/.htaccess || exit 1
 
 STEP "initializing"
 ./cron.sh
