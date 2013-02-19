@@ -22,16 +22,18 @@ if ! curl -s $CURL_FTP_URL/data/ &> /dev/null; then
 fi
 
 STEP "installing webapp"
+( cd ../webapp
 for f in $FILES; do
 	STEP "installing $f"
 	curl -s -T $f $CURL_FTP_URL/
 done
+)
 
 STEP "installing manifest"
 ( cat << EOF 
 MANIFEST
 # $(date +'%F %T')
-$(for f in $FILES; do echo $f; done)
+$(cd ../webapp; for f in $FILES; do echo $f; done)
 NETWORK:
 data/
 *
