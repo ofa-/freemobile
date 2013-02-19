@@ -65,6 +65,12 @@ function initCarousel(carousel, state) {
 	var currId = state.files.indexOf(state.currId);
 	var nbPages = state.files.length;
 	carousel.pageIndex = currId;
+	var local = localStorage.getItem(currId);
+	if (local) {
+		eval("local=" + local);
+		if (local.timeStamp != state.timeStamp)
+			localStorage.removeItem(currId);
+	}
 	for (var i = 0; i < 3; i++) {
 		var div = carousel.masterPages[i];
 		var dataId = (currId + i - 1 + nbPages) % nbPages;
@@ -102,14 +108,24 @@ function setViewData(dest, id, cache) {
 
 function createEntry(id) {
 	var entry = {};
-	entry.view = makeLoadingScreen();
-	getDataAsync(id, function(data) {
+	var create = function(data) {
 		entry.data = data;
+		localStorage.setItem(id, objToString(data));
 		if (entry.data) 
 			entry.view.innerHTML = formatData(entry.data);
 		else
 			entry.view.innerHTML = error("error loading data " + id);
-	});
+	}
+	var local = localStorage.getItem(id);
+	if (local) {
+		entry.view = document.createElement("div");
+		eval("local=" + local);
+		create(local);
+	}
+	else {
+		entry.view = makeLoadingScreen();
+		getDataAsync(id, create);
+	}
 	return entry;
 }
 
