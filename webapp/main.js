@@ -172,13 +172,19 @@ function makeLoadingScreen() {
 }
 
 function objToString (obj) {
-    var str = '';
-    for (var p in obj) {
-        if (obj.hasOwnProperty(p)) {
-            str += p + '::' + obj[p] + '\n';
-        }
-    }
-    return str;
+	var str = '{';
+	for (var p in obj) {
+		if (obj.hasOwnProperty(p)) {
+			var v = obj[p];
+			str += p + ":" + (
+			(v.constructor === Array) ?	'[' + v + ']' :
+			(typeof(v) == 'object') ?	objToString(v) :
+							v
+			) + ",";
+		}
+	}
+	str += '}';
+	return str;
 }
 
 function showError(msg) {
