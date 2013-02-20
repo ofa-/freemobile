@@ -68,7 +68,7 @@ function initCarousel(carousel, state) {
 	var local = localStorage.getItem(state.currId);
 	if (local) {
 		eval("local=" + local);
-		if (state.timeStamp - local.timestamp > 30) {
+		if (state.timestamp - local.timestamp > 30) {
 			localStorage.removeItem(state.currId);
 		}
 	}

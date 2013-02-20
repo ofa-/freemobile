@@ -14,6 +14,6 @@ FILES=$(curl -s $CURL_FTP_URL/data/ | egrep '[0-9]+.json' \
 echo "{
 	currId: $ID,
 	nbHours: $NB_HOURS,
-	timeStamp: $(date +%s),
+	timestamp: $(date +%s),
 	files: [ "$FILES" ],
 }" | curl -s -T - $CURL_FTP_URL/data/state.json
