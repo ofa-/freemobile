@@ -65,11 +65,12 @@ function initCarousel(carousel, state) {
 	var currId = state.files.indexOf(state.currId);
 	var nbPages = state.files.length;
 	carousel.pageIndex = currId;
-	var local = localStorage.getItem(currId);
+	var local = localStorage.getItem(state.currId);
 	if (local) {
 		eval("local=" + local);
-		if (local.timeStamp != state.timeStamp)
-			localStorage.removeItem(currId);
+		if (state.timeStamp - local.timestamp > 30) {
+			localStorage.removeItem(state.currId);
+		}
 	}
 	for (var i = 0; i < 3; i++) {
 		var div = carousel.masterPages[i];
