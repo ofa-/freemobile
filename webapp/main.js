@@ -1,13 +1,8 @@
 function init() {
-	hideUrlBar();
 	setupNav();
+	hideUrlBar();
 	setupLoading();
-	getStateAsync(function(state) {
-		if (state)
-			setupCarousel(state);
-		else
-			showError("error loading state");
-	});
+	buildCarousel();
 }
 
 function getStateAsync(callback) {
@@ -44,6 +39,49 @@ function hideUrlBar() {
 	window.onorientationchange();
 }
 
+function buildCarousel() {
+	getStateAsync(function(state) {
+		if (state) {
+			updateCache(state);
+			setupCarousel(state);
+		}
+		else {
+			state = getLocalItem("state");
+			if (state)
+				setupCarousel(state);
+			else
+				showError("no data");
+		}
+	});
+}
+
+function getLocalItem(key) {
+	return eval("(" + localStorage.getItem(key) + ")");
+}
+
+function setLocalItem(key, obj) {
+	localStorage.setItem(key, objToString(obj));
+}
+
+function updateCache(state) {
+	var local = getLocalItem("state");
+	if (local && local.timestamp < state.timestamp) {
+		for (var id in state.files) {
+			invalidateLocal(id, local.timestamp, state.timestamp);
+		}
+	}
+	setLocalItem("state", state);
+}
+
+function invalidateLocal(id, min_timestamp, max_timestamp) {
+	var local = getLocalItem(id);
+	if (local
+	 && local.timestamp > min_timestamp + 30
+	 && local.timestamp < max_timestamp + 30) {
+		setLocalItem(id, 0);
+	}
+}
+
 function setupCarousel(state) {
 	var carousel = new SwipeView('#data', {
 		numberOfPages: state.files.length,
@@ -65,13 +103,6 @@ function initCarousel(carousel, state) {
 	var currId = state.files.indexOf(state.currId);
 	var nbPages = state.files.length;
 	carousel.pageIndex = currId;
-	var local = localStorage.getItem(state.currId);
-	if (local) {
-		eval("local=" + local);
-		if (state.timestamp - local.timestamp > 30) {
-			localStorage.removeItem(state.currId);
-		}
-	}
 	for (var i = 0; i < 3; i++) {
 		var div = carousel.masterPages[i];
 		var dataId = (currId + i - 1 + nbPages) % nbPages;
@@ -111,16 +142,15 @@ function createEntry(id) {
 	var entry = {};
 	var create = function(data) {
 		entry.data = data;
-		localStorage.setItem(id, objToString(data));
+		setLocalItem(id, data);
 		if (entry.data) 
 			entry.view.innerHTML = formatData(entry.data);
 		else
 			entry.view.innerHTML = error("error loading data " + id);
 	}
-	var local = localStorage.getItem(id);
+	var local = getLocalItem(id);
 	if (local) {
 		entry.view = document.createElement("div");
-		eval("local=" + local);
 		create(local);
 	}
 	else {
