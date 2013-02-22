@@ -41,17 +41,15 @@ function hideUrlBar() {
 
 function buildCarousel() {
 	getStateAsync(function(state) {
-		if (state) {
-			updateCache(state);
-			setupCarousel(state);
-		}
-		else {
+		if (state)
+			updateLocal(state);
+		else
 			state = getLocalItem("state");
-			if (state)
-				setupCarousel(state);
-			else
-				showError("no data");
-		}
+
+		if (state)
+			setupCarousel(state);
+		else
+			showError("no data");
 	});
 }
 
@@ -63,32 +61,44 @@ function setLocalItem(key, obj) {
 	localStorage.setItem(key, objToString(obj));
 }
 
-function updateCache(state) {
+function updateLocal(state) {
 	var local = getLocalItem("state");
-	if (local && local.timestamp < state.timestamp) {
-		for (var id in state.files) {
-			invalidateLocal(id, local.timestamp, state.timestamp);
-		}
-	}
+	if (local && local.timestamp < state.timestamp)
+		invalidateLocal(local, state);
 	setLocalItem("state", state);
 }
 
-function invalidateLocal(id, min_timestamp, max_timestamp) {
-	var local = getLocalItem(id);
-	if (local
-	 && local.timestamp > min_timestamp + 30
-	 && local.timestamp < max_timestamp + 30) {
-		setLocalItem(id, 0);
+function invalidateLocal(local, state) {
+	var currId = state.files.indexOf(local.currId);
+	var stopId = state.files.indexOf(state.currId);
+	var size = state.files.length;
+	if (currId == -1)
+		currId = (stopId + 1) % size;
+	while (currId != stopId) {
+		setLocalItem(state.files[currId], 0);
+		currId = ++currId % size;
 	}
+	setLocalItem(state.files[currId], 0);
+}
+
+function populateCache(state) {
+	var cache = {};
+	cache.size = state.files.length;
+	cache.currId = state.files.indexOf(state.currId);
+	for (var i=0; i < cache.size; i++) {
+		cache[i] = createEntry(state.files[i]);
+	}
+	return cache;
 }
 
 function setupCarousel(state) {
+	var cache = populateCache(state);
 	var carousel = new SwipeView('#data', {
-		numberOfPages: state.files.length,
+		numberOfPages: cache.size,
 		hastyPageFlip: true
 	});
+	initCarousel(carousel, cache);
 	initNav(carousel);
-	initCarousel(carousel, state);
 }
 
 function initNav(carousel) {
@@ -98,16 +108,15 @@ function initNav(carousel) {
 	butts[2].onclick = function() { carousel.next(); }
 }
 
-function initCarousel(carousel, state) {
-	var cache = {};
-	var currId = state.files.indexOf(state.currId);
-	var nbPages = state.files.length;
+function initCarousel(carousel, cache) {
+	var currId = cache.currId;
+	var nbPages = cache.size;
 	carousel.pageIndex = currId;
 	for (var i = 0; i < 3; i++) {
 		var div = carousel.masterPages[i];
 		var dataId = (currId + i - 1 + nbPages) % nbPages;
 		div.appendChild(document.createElement("dummy"));
-		setViewData(div, state.files[dataId], cache);
+		setViewData(div, cache[dataId]);
 	}
 	removeLoading();
 	carousel.onFlip(function () { carousel.flip() });
@@ -116,7 +125,7 @@ function initCarousel(carousel, state) {
 		var mp = (this.currentMasterPage - dir + 3) % 3;
 		var id = (this.pageIndex - dir + nbPages) % nbPages;
 		var div = this.masterPages[mp];
-		setViewData(div, state.files[id], cache);
+		setViewData(div, cache[id]);
 		setHomeButt(this.pageIndex == currId ? "::" : ": :"); 
 	}
 	carousel.home = function () {
@@ -128,13 +137,7 @@ function initCarousel(carousel, state) {
 	}
 }
 
-function setViewData(dest, id, cache) {
-	var cacheId = "id_" + id;
-	var entry = cache[cacheId];
-	if (!entry) {
-		entry = createEntry(id);
-		cache[cacheId] = entry;
-	}
+function setViewData(dest, entry) {
 	dest.replaceChild(entry.view, dest.firstChild);
 }
 
