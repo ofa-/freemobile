@@ -117,11 +117,9 @@ function initCarousel(carousel, cache) {
 	}
 	carousel.onFlip(function () {
 		for (var i=0; i<3; i++) {
-			var mp = carousel.masterPages[i];
-			var upcoming = mp.dataset.upcomingPageIndex;
-			if (upcoming != mp.dataset.pageIndex) {
-				setViewData(mp, cache[upcoming]);
-			}
+			var mpId = (carousel.currentMasterPage + i) % 3;
+			var pgId = (carousel.pageIndex + i) % nbPages;
+			setViewData(carousel.masterPages[mpId], cache[pgId]);
 		}
 		setHomeButt(carousel.pageIndex == currId ? "::" : ": :"); 
 	});
