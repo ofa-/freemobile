@@ -31,20 +31,19 @@ done
 
 STEP "installing manifest"
 ( cat << EOF 
-MANIFEST
+CACHE MANIFEST
 # $(date +'%F %T')
 $(cd ../webapp; for f in $FILES; do echo $f; done)
 NETWORK:
 data/
-*
 EOF
-) | curl -s -T - $CURL_FTP_URL/manifest.mf
+) | curl -s -T - $CURL_FTP_URL/cache.manifest
 
 STEP "installing .htaccess"
 ( cat << EOF 
 ErrorDocument 404 "<html><script>location.replace('./')</script></html>"
 AddDefaultCharset UTF-8
-AddType text/cache-manifest .mf
+AddType text/cache-manifest .manifest
 EOF
 ) | curl -s -T - $CURL_FTP_URL/.htaccess
 
