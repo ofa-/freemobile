@@ -250,8 +250,9 @@ function getDots() {
 }
 
 function getVersion() {
+	var manifest = document.documentElement.getAttribute("manifest");
 	var req = new XMLHttpRequest();
-	req.open('GET', "manifest.mf", false);
+	req.open('GET', manifest, false);
 	req.send(null);
 	var version = req.responseText.split('\n')[1];
 	return version;
