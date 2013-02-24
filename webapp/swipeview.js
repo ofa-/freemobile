@@ -395,7 +395,6 @@ var SwipeView = (function (window, document) {
 			if (this.directionX > 0) {
 				this.page = -Math.ceil(this.x / this.pageWidth);
 				this.currentMasterPage = (this.page + 1) - Math.floor((this.page + 1) / 3) * 3;
-				this.pageIndex = this.pageIndex === 0 ? this.options.numberOfPages - 1 : this.pageIndex - 1;
 
 				pageFlip = this.currentMasterPage - 1;
 				pageFlip = pageFlip < 0 ? 2 : pageFlip;
@@ -405,7 +404,6 @@ var SwipeView = (function (window, document) {
 			} else {
 				this.page = -Math.floor(this.x / this.pageWidth);
 				this.currentMasterPage = (this.page + 1) - Math.floor((this.page + 1) / 3) * 3;
-				this.pageIndex = this.pageIndex == this.options.numberOfPages - 1 ? 0 : this.pageIndex + 1;
 
 				pageFlip = this.currentMasterPage + 1;
 				pageFlip = pageFlip > 2 ? 0 : pageFlip;
@@ -413,6 +411,8 @@ var SwipeView = (function (window, document) {
 
 				pageFlipIndex = this.page + 1;
 			}
+			var nbPages = this.options.numberOfPages;
+			this.pageIndex = (this.page % nbPages + nbPages ) % nbPages;
 
 			// Add active class to current page
 			className = this.masterPages[this.currentMasterPage].className;
