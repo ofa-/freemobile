@@ -111,23 +111,20 @@ function initNav(carousel) {
 function initCarousel(carousel, cache) {
 	var currId = cache.currId;
 	var nbPages = cache.size;
-	carousel.pageIndex = currId;
 	for (var i = 0; i < 3; i++) {
 		var div = carousel.masterPages[i];
-		var dataId = (currId + i - 1 + nbPages) % nbPages;
 		div.appendChild(document.createElement("dummy"));
-		setViewData(div, cache[dataId]);
 	}
-	removeLoading();
-	carousel.onFlip(function () { carousel.flip() });
-	carousel.flip = function () {
-		var dir = this.directionX;
-		var mp = (this.currentMasterPage - dir + 3) % 3;
-		var id = (this.pageIndex - dir + nbPages) % nbPages;
-		var div = this.masterPages[mp];
-		setViewData(div, cache[id]);
-		setHomeButt(this.pageIndex == currId ? "::" : ": :"); 
-	}
+	carousel.onFlip(function () {
+		for (var i=0; i<3; i++) {
+			var mp = carousel.masterPages[i];
+			var upcoming = mp.dataset.upcomingPageIndex;
+			if (upcoming != mp.dataset.pageIndex) {
+				setViewData(mp, cache[upcoming]);
+			}
+		}
+		setHomeButt(carousel.pageIndex == currId ? "::" : ": :"); 
+	});
 	carousel.home = function () {
 		var d = currId - this.pageIndex;
 		if (Math.abs(d) > nbPages/2) d -= nbPages;
@@ -135,6 +132,8 @@ function initCarousel(carousel, cache) {
 		else if (d > 0)  while (d--) this.next();
 		else if (d < 0)  while (d++) this.prev();
 	}
+	carousel.goToPage(currId);
+	removeLoading();
 }
 
 function setViewData(dest, entry) {
