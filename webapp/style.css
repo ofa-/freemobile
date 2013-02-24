@@ -1,5 +1,5 @@
 #data {
-	height: 12em;
+	height: 12.2em;
 }
 #data div div {
 	display: table;
@@ -42,7 +42,7 @@
 	border-radius: .5em;
 	-webkit-border-radius: .5em;
 	-moz-border-radius: .5em;
-	margin: .2em .5em;
+	margin: 0em .5em;
 	text-align: center;
 	display: inline-block;
 	width: 2.5em;
