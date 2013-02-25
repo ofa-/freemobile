@@ -219,16 +219,14 @@ function makeLoadingScreen() {
 }
 
 function objToString (obj) {
-	var str = '';
+	var str = "";
 	for (var p in obj) {
-		if (obj.hasOwnProperty(p)) {
-			var v = obj[p];
-			str += p + ":" + (
+		var v = obj[p];
+		str += p + ":" + (
 			(v.constructor === Array) ?	'[' + v + ']' :
-			(typeof(v) == 'object') ?	objToString(v) :
+			(v.constructor === Object) ?	objToString(v) :
 							v
-			) + ",";
-		}
+		) + ",";
 	}
 	return obj ? "{" + str + "}" : "null";
 }
