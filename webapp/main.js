@@ -116,9 +116,9 @@ function initCarousel(carousel, cache) {
 		div.appendChild(document.createElement("dummy"));
 	}
 	carousel.onFlip(function () {
-		for (var i=0; i<3; i++) {
-			var mpId = (carousel.currentMasterPage + i) % 3;
-			var pgId = (carousel.pageIndex + i) % nbPages;
+		for (var i=-1; i<2; i++) {
+			var mpId = (carousel.currentMasterPage + i + 3) % 3;
+			var pgId = (carousel.pageIndex + i + nbPages) % nbPages;
 			setViewData(carousel.masterPages[mpId], cache[pgId]);
 		}
 		setHomeButt(carousel.pageIndex == currId ? "::" : ": :"); 
