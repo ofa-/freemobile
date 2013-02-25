@@ -54,11 +54,11 @@ function buildCarousel() {
 }
 
 function getLocalItem(key) {
-	return eval("(" + localStorage.getItem(key) + ")");
+	return eval("(" + localStorage.getItem("freemobile_" + key) + ")");
 }
 
 function setLocalItem(key, obj) {
-	localStorage.setItem(key, objToString(obj));
+	localStorage.setItem("freemobile_" + key, objToString(obj));
 }
 
 function updateLocal(state) {
