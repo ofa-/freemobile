@@ -204,7 +204,7 @@ function pretty_time(sec) {
 	var h = Math.floor(sec / 3600);
 	var m = Math.floor((sec - h * 3600) / 60);
 	var s = sec % 60;
-	return h ? h + " h " + m + " min" : m ? m + " min " + s + "s" : s + "s";
+	return h ? h + " h " + m + " min" : m ? m + " min " + s + "s" : s + " s";
 }
 
 function error(msg) {
