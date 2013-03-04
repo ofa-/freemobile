@@ -21,6 +21,9 @@ mms_int=$(get_field mms-inter | num)
 data_int=$(get_field data-inter | num)
 voice_int_details=$(get_field voice-inter) # not used
 
+get_field data		| grep -q Mo || data_nat=$(printf "0.%03d" "$data_nat")
+get_field data-inter	| grep -q Mo || data_int=$(printf "0.%03d" "$data_int")
+
 export LANG=C
 add() { awk '{ x += $1 } END { print x }'; }
 cost=$(printf "%.2f" $({ get_costs; echo $TAG_PRICE; } | add))
@@ -36,7 +39,7 @@ cat << EOF
 	mms_nat:	$mms_nat,
 	mms_int:	$mms_int,
 	data_nat:	$data_nat,	// Mo
-	data_int:	${data_int:-0},	// Mo
+	data_int:	$data_int,	// Mo
 	cost:		$cost,
 }
 EOF
