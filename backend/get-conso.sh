@@ -3,8 +3,8 @@
 NUMBER=$1
 TAG_PRICE=$2
 
-num() { tr -dc '[0-9.]' ; }
-sec() { tr -c '[0-9]' " " | awk '{h=$1; m=$2; s=$3; print s + m*60 + h*3600}'; }
+num() { tr -dc '0-9.' ; }
+sec() { tr -c '0-9' " " | awk '{h=$1; m=$2; s=$3; print s + m*60 + h*3600}'; }
 get_field() { echo "$DATA" | grep -- "$NUMBER-$1@" | cut -d';' -f3 ; }
 get_costs() { echo "$DATA" | grep -- "$NUMBER-" | cut -d';' -f5 ; }
 
